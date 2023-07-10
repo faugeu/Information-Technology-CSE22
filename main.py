@@ -32,7 +32,7 @@ client = MQTTClient(AIO_USERNAME , AIO_KEY)
 
 client.connect()
 client.loop_background()
-# init_global_equation()
+init_global_equation()
 
 while True:
     temp_value = r.randint(20, 50)
@@ -47,7 +47,7 @@ while True:
     time.sleep(2)
     client.publish("water_level", water_value)
     time.sleep(2)
-    if (temp_value + humi_value + soil_value) / 3 >= 40:
+    if ( 20 <calculate(temp_value, humi_value, soil_value)/ 3) < 60:
         client.publish("light_switch", "ON")
     else:
         client.publish("light_switch", "OFF")
@@ -57,6 +57,14 @@ while True:
     else:
         client.publish("pump_switch", "OFF")
     time.sleep(2)
+    if (soil_value > 90):
+        client.publish("message", "Don't water the tree")
+    elif (80 < soil_value <= 90):
+        client.publish("message","Watering 10 minute")
+    elif (70 < soil_value <= 80):
+        client.publish("message","Watering 15 minute")
+    elif (soil_value <= 70):
+        client.publish("message","Watering 20 minute")
     time.sleep(4)
     # client.publish("plot_result", calculate(sensor1_value, sensor2_value, sensor3_value))
     # time.sleep(2)
